@@ -22,26 +22,31 @@ class Grid
      *                          PUBLIC
      *========================================================================*/
 
-    getPossibleStep(position)
+    getPossibleSteps(position)
     {
         const possible_steps = [];
-        const callback = (x, y) => 
+        const callbackX = (x, y) => 
         {
             possible_steps.push(new Point(x, y));
         };
 
-        this[loop_through_pos_coord](
+        const callbackY = (x, y) =>
+        {
+            possible_steps.push(new Point(y, x));
+        };
+
+        this[loop_through_pos_coords](
             position.x, 
             position.y, 
             this.max_columns,
-            callback
+            callbackX
         );
 
-        this[loop_through_pos_coord](
+        this[loop_through_pos_coords](
             position.y, 
             position.x, 
             this.max_rows,
-            callback
+            callbackY
         );
 
         return possible_steps;
