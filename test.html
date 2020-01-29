@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<html>
+  <head>
+  </head>
 
-    <h2> Welcome to the test Page</h2>
+  <body>
+    <h1>Test</h1>
+    <p id="test"></p>
 
-    <script src="grid.js"></script>
-    <script src="test.js"></script>
-</body>
+    <script src="point.js"></script>
+    <script src="move.js"></script>
+    <script>
+      function move(start, end) {
+        var m = new Move(start, end);
+        return m.end_point.x;
+      }
+    </script>
+    <script>document.getElementById("test").innerHTML = move(new Point(1,2), new Point(3,4))</script>
+  </body>
 </html>
