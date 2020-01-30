@@ -43,14 +43,4 @@ class Planner
     {
         return this.list_of_robots;
     }
-
-    popAssignment()
-    {
-        if (this.list_of_assignments.length > 0)
-        {
-            return this.list_of_assignments.shift();
-        }
-
-        throw new Error(`planner::popAssignment: cannot pop empty list`);
-    }
 }
