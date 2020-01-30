@@ -54,7 +54,7 @@ class Robot
         {
             const pair_current_next = new Move(
                 this.getCurrentLocation(),
-                this.route.shift()
+                Utils.first(this.route)
             );
             //this.platform.post(this, pair_current_next);
             
@@ -62,7 +62,8 @@ class Robot
         else {
 
             //we have green light, pop the next coord from the route and go
-            this.route.shift();
+            //pop the first coord of the route and update current pos
+            this.current_coord = this.route.shift();
             this.green_light = false;
         }
     }
@@ -125,18 +126,20 @@ class Robot
 
         while(compX(x, p1.x))
         {
-            x = increaseOrDecrease(p0.x, p1.x, x);
             this.route.push(new Point(x, p0.y));
+            x = increaseOrDecrease(p0.x, p1.x, x);
         }
 
         while(compY(y, p1.y))
         {
-            y = increaseOrDecrease(p0.y, p1.y, y);
             this.route.push(new Point(p1.x, y));
+            y = increaseOrDecrease(p0.y, p1.y, y);
         }
     }
 
- /*===========================================================================*/
+ /*===========================================================================*
+  *                         PRIVATE
+  *===========================================================================*/
 
     // function seletect the correct comperator, if the start coord is lower
     // than the target coord, then antother comperator has to be chosen

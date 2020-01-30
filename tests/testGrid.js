@@ -2,12 +2,19 @@ const grid = new Grid(10, 10);
 
 const grid_reps = grid.getGrid();
 
-const possible_steps = grid.getPossibleSteps(new Point(5, 5));
+const start_point = new Point(5, 5);
+const possible_steps = grid.getPossibleSteps(start_point);
 
 const ul_pos = document.createElement('ul');
 const ul_grid = document.createElement('ul');
 
 const div = document.getElementsByClassName('testing-ground');
+
+const p_pos_steps = document.createElement('p');
+p_pos_steps.innerText = `possible_steps from ${start_point.x} ${start_point.y}`;
+
+const p_grid = document.createElement('p');
+p_grid.innerText = 'Here is the Grid: ';
 
 possible_steps.forEach((element) => {
     const li = document.createElement('li');
@@ -21,12 +28,10 @@ grid_reps.forEach((element) => {
     ul_grid.appendChild(li);
 });
 
+div[0].appendChild(p_pos_steps);
 div[0].appendChild(ul_pos);
+div[0]. appendChild(p_grid);
 div[0].appendChild(ul_grid)
 
 
-const robot = new Robot("bawwy", new Point(2, 2));
-const assignment = new Assignment();
-assignment.addPoint(new Point(5, 5));
-robot.addAssignment(assignment);
 
