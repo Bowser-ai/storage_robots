@@ -40,11 +40,11 @@ class Robot
 
         if(!this.green_light)
         {
-            pair_current_next = new Move(
+            const pair_current_next = new Move(
                 this.getCurrentLocation(),
-                route.shift()
+                this.route.shift()
             );
-            this.platform.post(this, pair_current_next);
+            //this.platform.post(this, pair_current_next);
             this.route.shift();
             this.green_light = false;
         }
@@ -73,52 +73,52 @@ class Robot
         this.current_assignment = assignment;
         this.calculateRoute();
 
-        this.go();
+        //this.go();
     }
 
-    deltaXdeltaY(p0_dim, p1_dim)
+    deltaXdeltaY(p0_dimension, p1_dimension)
     {
-        const comp = {};
+        let compare_fn = {};
 
-        if (p0_dim < p1_dim)
+        if (p0_dimension < p1_dimension)
         {
-            comp = (p0_dim, p1_dim) => 
+            compare_fn = (p0_dimension, p1_dimension) => 
             {
-                return p0_dim <= p1_dim;
+                return p0_dimension <= p1_dimension;
             };
         }
         else
         {
-            comp = (p0_dim, p1_dim) =>
+            compare_fn = (p0_dimension, p1_dimension) =>
             {
-                return p0_dim >= p1_dim
+                return p0_dimension >= p1_dimension
             }
         }
 
-        return comp;
+        return compare_fn;
     }
 
     calculateRoute()
     {
         const p0 = this.getCurrentLocation();
-        const p1 = current_assignment.shift();
+        const p1 = this.current_assignment.popFirst();
 
         const compX = this.deltaXdeltaY(p0.x, p1.x);
         const compY = this.deltaXdeltaY(p0.y, p1.y);
 
         let x = p0.x;
-        let y = p1.y + 1;
+        let y = p0.y + 1;
 
-        while(compX(p0.x, p1.x))
+        while(compX(x, p1.x))
         {
-            route.push(new Point(x, p0.y));
+            this.route.push(new Point(x, p0.y));
             if (p0.x < p1.x) ++x;
             else             --x;
         }
 
-        while(compY(p0.y, p1.y))
+        while(compY(y, p1.y))
         {
-            route.push(new Point(p1.x, y));
+            this.route.push(new Point(p1.x, y));
             if (p0.y < p1.y) ++y;
             else             --y;
         }
