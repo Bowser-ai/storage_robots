@@ -1,5 +1,5 @@
-test.html
-test.js
-testGrid.js
-testRobot.js
-testPlanner.js
+tests/test.html
+tests/test.js
+tests/testGrid.js
+tests/testRobot.js
+tests/testPlanner.js
