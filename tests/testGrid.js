@@ -8,7 +8,7 @@ const possible_steps = grid.getPossibleSteps(start_point);
 const ul_pos = document.createElement('ul');
 const ul_grid = document.createElement('ul');
 
-const div = document.getElementsByClassName('testing-ground');
+const div = document.getElementsByClassName('testing-grounds');
 
 const p_pos_steps = document.createElement('p');
 p_pos_steps.innerText = `possible_steps from ${start_point.x} ${start_point.y}`;
