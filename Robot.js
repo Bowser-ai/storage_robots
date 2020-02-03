@@ -129,9 +129,10 @@ class Robot
 
   deviate()
   {
+    const possible_steps = this.grid.getPossibleSteps(this.current_coord);
     // pick a random number from the possibleSteps array
-    const index = Math.floor(Math.random() * this.grid.possibleSteps().length);
-    route.push(new Point(this.grid.possibleSteps[index]));
+    const index = Math.floor(Math.random() * possible_steps.length);
+    this.route.push(new Point(possible_steps[index]));
     this.go();
   }
 

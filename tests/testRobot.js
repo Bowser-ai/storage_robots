@@ -14,6 +14,8 @@ const control_panels = document.querySelector(CONTROL_PANELS);
 
 const list_of_robot_obj = [];
 
+
+
 function createAddAssignmentButton(robot) {
   const add_assignment_button = document.createElement('button');
   add_assignment_button.innerText = "Add Assignment";
@@ -57,20 +59,6 @@ function createAddXYCoordAssignment(x) {
   addXAssignment.setAttribute('type', 'number');
   addXAssignment.setAttribute('placeholder', `Enter ${x} Coord....`);
   return addXAssignment;
-}
-
-function alterCurrentPosition() {
-  current_position.setAttribute('value',
-        `current_loc(x, y):   ${robot.getCurrentLocation().x},      ${robot.getCurrentLocation().y}`);
-      }
-
-function calculateRouteTest(robot) {
-  robot.route.forEach((element) => {
-      const li = document.createElement('li');
-      p.innerText = `Route generated for ${robot.getName()} :`;
-      li.innerText = element.x + ' ' + element.y;
-      ul.appendChild(li);
-  });
 }
 
 add_robot_button.addEventListener('click', e => {
@@ -142,8 +130,12 @@ function addGoEventHandler(button) {
     list_of_robot_obj.forEach(robot => {
       robot.giveGreenLight();
       const current_location_field = document.querySelector(`#current-${robot.getName()}`);
+      const target_location_field = document.querySelector(`#target-${robot.getName()}`)
       current_location_field.innerText =
       `Current Location: ${robot.getCurrentLocation().x} ${robot.getCurrentLocation().y}`;
+      target_location_field.innerText =
+      robot.route[0] ?
+      `Target Location: ${robot.route[0].x} ${robot.route[0].y}` : "unknown";
     });
   });
 }
@@ -151,16 +143,3 @@ function addGoEventHandler(button) {
 const go_button = createGoButton();
 addGoEventHandler(go_button);
 document.querySelector('body').appendChild(go_button);
-
-//route_button.addEventListener('click', calculateRouteTest);
-
-//alterCurrentPosition();
-
-//div[0].appendChild(p);
-//div[0].appendChild(ul);
-//div[0].appendChild(current_position);
-//div[0].appendChild(inputX);
-//div[0].appendChild(inputY);
-//div[0].appendChild(button);
-//div[0].appendChild(route_button);
-//
