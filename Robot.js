@@ -40,7 +40,7 @@ class Robot
         {
             if (!this.current_assignment.empty()) //still an assignment?
             {
-                this.addAssignment(current_assignment);
+                this[calculateRoute]();
             }
 
             // nothing to do?? signal ready!!

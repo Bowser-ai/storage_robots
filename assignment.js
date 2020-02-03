@@ -7,6 +7,7 @@ class Assignment
 
   addPoint(point)
   {
+
     if (point instanceof Point)
     {
       this.points.push(point);
