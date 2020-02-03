@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Suite</title>
+</head>
+<body>
+    <h1>Testing Page</h1>
+    <div class="testing-ground"></div>
+
+    <div>
+      <h2> Robots </h2>
+      <ul class="list-of-robots" data-role="list-of-robots"></ul>
+    </div>
+
+    <div class="">
+      <label>Robot Name:</label><input type="text" placeholder="Name" data-role="get-robot-name">
+      <label>Initial X - Coordinate:</label><input type="number" placeholder="X coord.." data-role="get-x-coord">
+      <label>Initial Y -Coordinate:</label><input type="number" placeholder="Y coord..." data-role="get-y-coord">
+      <button class="add-robot-button" data-role="add-robot">Add Robot</button>
+    </div>
+
+    <h2>Robots Control panels:</h2>
+      <div class="robot-control-panels" data-role="control-panels"></div>
+
+    <script src="../utils.js"></script>
+    <script src="../point.js"></script>
+    <script src="../move.js"></script>
+    <script src="../grid.js"></script>
+    <script src="../assignment.js"></script>
+    <script src="../list_of_assignments.js"></script>
+    <script src="../planner.js"></script>
+    <script src="../Robot.js"></script>
+    <!--script src="testGrid.js"></script-->
+    <script src="testRobot.js"></script>
+</body>
+</html>

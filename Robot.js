@@ -1,9 +1,10 @@
 
 const selectComperator = Symbol();
+const calculateRoute = Symbol();
 
 class Robot
 {
-    constructor(name, initial_coord = new Point(0, 0))
+    constructor(name, initial_coord = new Point(0, 0), grid)
     {
         this.name = name;
 
@@ -16,6 +17,7 @@ class Robot
         this.green_light = false;
         this.ready = true;
 
+        this.grid = grid;
         //this.platform = Platform.getInstance();
 
         this.signalReady();
@@ -36,19 +38,20 @@ class Robot
     {
         if (this.route.length === 0) //no route?
         {
-            if (this.current_assignment > 0) //still an assignment?
+            if (!this.current_assignment.empty()) //still an assignment?
             {
                 this.addAssignment(current_assignment);
-            } 
+            }
 
             // nothing to do?? signal ready!!
-            else 
+            else
             {
                 this.ready = true;
+                return;
             }
         }
 
-        // no green ligth means the robot will posts its intensions to the
+        // no green light means the robot will posts its intensions to the
         // platform
         if(!this.green_light)
         {
@@ -57,7 +60,7 @@ class Robot
                 Utils.first(this.route)
             );
             //this.platform.post(this, pair_current_next);
-            
+
         }
         else {
 
@@ -96,46 +99,41 @@ class Robot
     addAssignment(assignment)
     {
         this.ready = false;
-        this.current_assignment = assignment;
-        this.calculateRoute();
-
-        //this.go();
-    }
-
- /*===========================================================================*/
-
-    calculateRoute()
-    {
-        const p0 = this.getCurrentLocation();
-        const p1 = this.current_assignment.popFirst();
-
-        const compX = this[selectComperator](p0.x, p1.x);
-        const compY = this[selectComperator](p0.y, p1.y);
-
-
-        // if the start coord is lower than the target coord, we need to
-        // increase the coord every step, else we need to decrease the coord
-        const increaseOrDecrease = (p0_dimension, p1_dimension, dimension) =>
+        if (this.current_assignment.length === 0 ||
+          this.current_assignment.empty())
         {
-            if (p0_dimension < p1_dimension) return ++dimension;
-            else                             return --dimension;
-        };
-
-        let x = p0.x;
-        let y = p0.y + 1;
-
-        while(compX(x, p1.x))
-        {
-            this.route.push(new Point(x, p0.y));
-            x = increaseOrDecrease(p0.x, p1.x, x);
+          this.current_assignment = assignment;
+          this[calculateRoute]();
         }
-
-        while(compY(y, p1.y))
+        else
         {
-            this.route.push(new Point(p1.x, y));
-            y = increaseOrDecrease(p0.y, p1.y, y);
+          throw new Error(`${this.getName()} already has an assignment`);
         }
     }
+
+  /*==========================================================================*/
+
+  wait()
+  {
+    //this.platform.post(this, this.current_coord);
+  }
+
+  /*==========================================================================*/
+
+  continue()
+  {
+    this.go();
+  }
+
+  /*==========================================================================*/
+
+  deviate()
+  {
+    // pick a random number from the possibleSteps array
+    const index = Math.floor(Math.random() * this.grid.possibleSteps().length);
+    route.push(new Point(this.grid.possibleSteps[index]));
+    this.go();
+  }
 
  /*===========================================================================*
   *                         PRIVATE
@@ -143,24 +141,68 @@ class Robot
 
     // function seletect the correct comperator, if the start coord is lower
     // than the target coord, then antother comperator has to be chosen
-    
+
     [selectComperator](p0_dimension, p1_dimension)
     {
         let compare_fn = {};
 
         if (p0_dimension < p1_dimension)
         {
-            compare_fn = (p0_dimension, p1_dimension) => 
-                p0_dimension <= p1_dimension;
+            compare_fn = (p0_dimension, p1_dimension) =>
+                p0_dimension <= p1_dimension - 1;
         }
         else
         {
-            compare_fn = (p0_dimension, p1_dimension) => 
-                p0_dimension >= p1_dimension
+            compare_fn = (p0_dimension, p1_dimension) =>
+                p0_dimension >= p1_dimension + 1;
         }
 
         return compare_fn;
     }
 
  /*===========================================================================*/
+
+ [calculateRoute]()
+ {
+     const p0 = this.getCurrentLocation();
+     const p1 = this.current_assignment.popFirst();
+
+     if (!this.grid.isInGrid(p0) || !this.grid.isInGrid(p1))
+     {
+       throw new Error("Assignments point outside the grid");
+     }
+
+     const compX = this[selectComperator](p0.x, p1.x);
+     const compY = this[selectComperator](p0.y, p1.y);
+
+     let x = p0.x;
+     let y = p0.y;
+
+     // if the start coord is lower than the target coord, we need to
+     // increase the coord every step, else we need to decrease the coord
+     const increaseOrDecrease = (p0_dimension, p1_dimension, dimension) =>
+     {
+       if (p0_dimension < p1_dimension )
+       {
+        return ++dimension;
+      }
+       else
+       {
+         return --dimension;
+       }
+     };
+
+     while(compX(x, p1.x))
+     {
+         x = increaseOrDecrease(p0.x, p1.x, x);
+         this.route.push(new Point(x, p0.y));
+
+     }
+
+     while(compY(y, p1.y))
+     {
+         y = increaseOrDecrease(p0.y, p1.y, y);
+         this.route.push(new Point(p1.x, y));
+     }
+ }
 }

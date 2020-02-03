@@ -30,7 +30,5 @@ grid_reps.forEach((element) => {
 
 div[0].appendChild(p_pos_steps);
 div[0].appendChild(ul_pos);
-div[0]. appendChild(p_grid);
+div[0].appendChild(p_grid);
 div[0].appendChild(ul_grid)
-
-

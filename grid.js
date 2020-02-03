@@ -25,7 +25,7 @@ class Grid
     getPossibleSteps(position)
     {
         const possible_steps = [];
-        const callbackX = (x, y) => 
+        const callbackX = (x, y) =>
         {
             possible_steps.push(new Point(x, y));
         };
@@ -36,15 +36,15 @@ class Grid
         };
 
         this[loop_through_pos_coords](
-            position.x, 
-            position.y, 
+            position.x,
+            position.y,
             this.max_columns,
             callbackX
         );
 
         this[loop_through_pos_coords](
-            position.y, 
-            position.x, 
+            position.y,
+            position.x,
             this.max_rows,
             callbackY
         );
@@ -62,13 +62,24 @@ class Grid
     }
 
     /*=========================================================================
+    *
+    *==========================================================================*/
+
+    isInGrid(position)
+    {
+      return this.grid_reps.find(
+        coord => coord.x === position.x && coord.y === position.y
+      ) ? true : false ;
+    }
+
+    /*=========================================================================
      *                          PRIVATE
      *========================================================================*/
 
-    [loop_through_pos_coords](first_coord, second_coord, criterium, fn) 
+    [loop_through_pos_coords](first_coord, second_coord, criterium, fn)
     {
         for (let x = first_coord - 1 , y = second_coord
-            ; x <= first_coord + 1 
+            ; x <= first_coord + 1
             ; ++x
         )
         {
@@ -79,5 +90,3 @@ class Grid
         }
     }
 }
-
-
