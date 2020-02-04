@@ -7,19 +7,15 @@ const INPUT_X_COORD_INIT = '[data-role="get-x-coord"]';
 const INPUT_Y_COORD_INIT = '[data-role="get-y-coord"]';
 
 const grid = new Grid(10, 10);
+const planner = new Planner();
 
 const list_of_robots = document.querySelector(LIST_OF_ROBOTS_SELECTOR);
 const add_robot_button = document.querySelector(ADD_ROBOT_BUTTON_SELECTOR);
 const control_panels = document.querySelector(CONTROL_PANELS);
 
-const list_of_robot_obj = [];
-
-
-
-function createAddAssignmentButton(robot) {
+function createAddAssignmentButton() {
   const add_assignment_button = document.createElement('button');
   add_assignment_button.innerText = "Add Assignment";
-  add_assignment_button.id = robot.getName();
   return add_assignment_button;
 }
 
@@ -29,9 +25,9 @@ function createGoButton() {
   return go_button;
 }
 
-function createSendAssignmentButton(robot) {
+function createSendAssignmentButton() {
   const send_assignment_button = document.createElement('button');
-  send_assignment_button.innerText = `Send Assignment to ${robot.getName()}`;
+  send_assignment_button.innerText = 'Send to Planner';
   return send_assignment_button;
 }
 
@@ -62,15 +58,12 @@ function createAddXYCoordAssignment(x) {
 }
 
 add_robot_button.addEventListener('click', e => {
-  const list_of_assignments = document.createElement('ul');
   const robot_list_element = document.createElement('li');
   const robot_name = document.querySelector(INPUT_ROBOT_NAME_SELECTOR).value;
   const init_coord_x = Number(document.querySelector(INPUT_X_COORD_INIT).value);
   const init_coord_y = Number(document.querySelector(INPUT_Y_COORD_INIT).value);
-
   const robot = new Robot(robot_name, new Point(init_coord_x, init_coord_y), grid);
-
-  list_of_robot_obj.push(robot);
+  planner.addRobot(robot);
 
   robot_list_element.innerText = `${robot_name}`;
   list_of_robots.appendChild(robot_list_element);
@@ -78,56 +71,44 @@ add_robot_button.addEventListener('click', e => {
   const name = document.createElement('h1');
   name.innerText = robot.getName();
   const control_panel = document.createElement('div');
-  const add_assignment_button = createAddAssignmentButton(robot)
-  const send_assignment_button = createSendAssignmentButton(robot);
-  const addX = createAddXYCoordAssignment('X');
-  const addY = createAddXYCoordAssignment('Y');
+
   const target_field = createCurrentTargetField(robot);
   const location_field = createCurrentLocationField(robot);
-  const go_button = createGoButton();
-
-  assignment = new Assignment();
-
-  addAssignmentEventHandler(add_assignment_button, assignment, list_of_assignments, addX, addY, robot);
-  addSendAssignmentEventHandler(send_assignment_button, target_field, assignment, list_of_assignments, robot);
 
   control_panels.appendChild(name);
   control_panel.appendChild(location_field);
   control_panel.appendChild(target_field);
-  control_panel.appendChild(addX);
-  control_panel.appendChild(addY);
-  control_panel.appendChild(add_assignment_button);
-  control_panel.appendChild(list_of_assignments);
-  control_panel.appendChild(send_assignment_button);
   control_panels.appendChild(control_panel);
 });
 
-function addAssignmentEventHandler(button, assignment, list_of_assignments, input_x, input_y, robot) {
+function addAssignmentEventHandler(button, assignment, list_of_assignments, input_x, input_y) {
   button.addEventListener('click', e => {
     assignment.addPoint(new Point(Number(input_x.value), Number(input_y.value)));
-    const assignment_item = document.createElement('ul');
     assignment_item.innerText = `assignment-item ${input_x.value} ${input_y.value}`;
-    list_of_assignments.appendChild(assignment_item);
+
     return assignment;
   });
 }
 
-function addSendAssignmentEventHandler(button ,target_field, assignment, list_of_assignments, robot) {
+function addSendAssignmentEventHandler(button , assignment, list_of_assignments, planner) {
   button.addEventListener('click', e => {
 
     while(list_of_assignments.firstChild) {
       list_of_assignments.removeChild(list_of_assignments.firstChild);
     }
-    robot.addAssignment(assignment);
-    target_field.innerText =
-    `Next Coordinate: ${robot.route[0].x} (x) ${robot.route[0].y} (y)`;
+    planner.addAssignment(assignment);
+    planner.getRobots().forEach(robot => {
+      const target_field = document.getElementById(`target-${robot.getName()}`);
+      target_field.innerText =
+        `Next Coordinate: assignment recieved!`;
+    });
     assignment = new Assignment();
   });
 }
 
 function addGoEventHandler(button) {
-  go_button.addEventListener('click', e=> {
-    list_of_robot_obj.forEach(robot => {
+  go_button.addEventListener('click', e => {
+    planner.getRobots().forEach(robot => {
       robot.giveGreenLight();
       const current_location_field = document.querySelector(`#current-${robot.getName()}`);
       const target_location_field = document.querySelector(`#target-${robot.getName()}`)
@@ -140,6 +121,23 @@ function addGoEventHandler(button) {
   });
 }
 
+const list_of_assignments = document.createElement('ul');
+const assignment_item = document.createElement('ul');
 const go_button = createGoButton();
 addGoEventHandler(go_button);
 document.querySelector('body').appendChild(go_button);
+
+const add_assignment_button = createAddAssignmentButton()
+const send_assignment_button = createSendAssignmentButton();
+control_panels.appendChild(add_assignment_button);
+control_panels.appendChild(send_assignment_button);
+const addX = createAddXYCoordAssignment('X');
+const addY = createAddXYCoordAssignment('Y');
+list_of_assignments.appendChild(assignment_item);
+control_panels.appendChild(addX);
+control_panels.appendChild(addY);
+control_panels.appendChild(list_of_assignments);
+assignment = new Assignment();
+
+addAssignmentEventHandler(add_assignment_button, assignment, list_of_assignments, addX, addY, planner);
+addSendAssignmentEventHandler(send_assignment_button, assignment, list_of_assignments, planner);

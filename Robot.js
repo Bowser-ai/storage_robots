@@ -1,12 +1,15 @@
 
 const selectComperator = Symbol();
 const calculateRoute = Symbol();
+const getAssignmentFromPlanner = Symbol();
 
 class Robot
 {
     constructor(name, initial_coord = new Point(0, 0), grid)
     {
         this.name = name;
+
+        this.planner = new Planner();
 
         this.current_coord = initial_coord;
 
@@ -38,7 +41,8 @@ class Robot
     {
         if (this.route.length === 0) //no route?
         {
-            if (!this.current_assignment.empty()) //still an assignment?
+            if (this.current_assignment.length !== 0 &&
+                !this.current_assignment.empty()) //still an assignment?
             {
                 this[calculateRoute]();
             }
@@ -47,6 +51,7 @@ class Robot
             else
             {
                 this.ready = true;
+                this[getAssignmentFromPlanner]();
                 return;
             }
         }
@@ -63,7 +68,6 @@ class Robot
 
         }
         else {
-
             //we have green light, pop the next coord from the route and go
             //pop the first coord of the route and update current pos
             this.current_coord = this.route.shift();
@@ -102,7 +106,7 @@ class Robot
         if (this.current_assignment.length === 0 ||
           this.current_assignment.empty())
         {
-          this.current_assignment = assignment;
+          this.current_assignment.push(assignment);
           this[calculateRoute]();
         }
         else
@@ -136,6 +140,13 @@ class Robot
     this.go();
   }
 
+  /*==========================================================================*/
+
+  stop()
+  {
+    this.green_light = false;
+  }
+
  /*===========================================================================*
   *                         PRIVATE
   *===========================================================================*/
@@ -166,7 +177,7 @@ class Robot
  [calculateRoute]()
  {
      const p0 = this.getCurrentLocation();
-     const p1 = this.current_assignment.popFirst();
+     const p1 = this.current_assignment.shift().popFirst();
 
      if (!this.grid.isInGrid(p0) || !this.grid.isInGrid(p1))
      {
@@ -205,5 +216,16 @@ class Robot
          y = increaseOrDecrease(p0.y, p1.y, y);
          this.route.push(new Point(p1.x, y));
      }
+ }
+ [getAssignmentFromPlanner]()
+ {
+   try {
+     assignment = this.planner.getAssignment();
+     this.addAssignment(assignment);
+   }
+   catch (error) {
+     console.log(error);
+     this.wait();
+   }
  }
 }

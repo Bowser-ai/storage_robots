@@ -5,21 +5,21 @@ class Planner
     {
         let instance = null;
         //singleton construction
-        if(!Planner.instance) 
+        if(!Planner.instance)
         {
             this.list_of_robots = [];
             this.list_of_assignments = [];
             Planner.instance = this;
-        } 
+        }
         else
         {
             return Planner.instance;
         }
     }
 
-    addRobot(name, initial = new Point(0, 0))
+    addRobot(robot)
     {
-        this.list_of_robots.push(new Robot(name, initial));
+        this.list_of_robots.push(robot);
     }
 
     removeRobot(name)
@@ -37,6 +37,17 @@ class Planner
     clearAssignments()
     {
         this.list_of_assignments.splice(0, this.list_of_assignments.length);
+    }
+
+    getAssignment()
+    {
+      try {
+        return this.list_of_assignments.shift();
+      }
+      catch (error)
+      {
+        throw new Error("planner does not have any assignments");
+      }
     }
 
     getRobots()

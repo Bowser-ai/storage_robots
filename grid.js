@@ -4,18 +4,27 @@ class Grid
 {
     constructor(max_columns, max_rows)
     {
-        this.max_columns = max_columns;
-        this.max_rows = max_rows;
+        let instance = null;
 
-        this.grid_reps = [];
+        if (!Grid.instance) {
+          this.max_columns = max_columns;
+          this.max_rows = max_rows;
 
-        for (let y = 0 ; y < this.max_rows ; ++y)
-        {
-            for (let x = 0 ; x < this.max_columns ; ++x)
-            {
-                this.grid_reps.push(new Point(x, y));
-            }
+          this.grid_reps = [];
+
+          for (let y = 0 ; y < this.max_rows ; ++y)
+          {
+              for (let x = 0 ; x < this.max_columns ; ++x)
+              {
+                  this.grid_reps.push(new Point(x, y));
+              }
+          }
+          Grid.instance = this;
         }
+        else {
+          return Grid.instance;
+        }
+
     }
 
     /*=========================================================================
@@ -25,28 +34,32 @@ class Grid
     getPossibleSteps(position)
     {
         const possible_steps = [];
-        const callbackX = (x, y) =>
+        const pushCallback = (x, y, x_first = false) =>
         {
+          if (x_first)
+          {
             possible_steps.push(new Point(x, y));
-        };
-
-        const callbackY = (x, y) =>
-        {
-            possible_steps.push(new Point(y, x));
+          }
+          else
+          {
+            possibleSteps.push(new Point(y,x));
+          }
         };
 
         this[loop_through_pos_coords](
             position.x,
             position.y,
             this.max_columns,
-            callbackX
+            pushCallback,
+            true
         );
 
         this[loop_through_pos_coords](
             position.y,
             position.x,
             this.max_rows,
-            callbackY
+            pushCallback,
+            false
         );
 
         return possible_steps;
@@ -76,7 +89,7 @@ class Grid
      *                          PRIVATE
      *========================================================================*/
 
-    [loop_through_pos_coords](first_coord, second_coord, criterium, fn)
+    [loop_through_pos_coords](first_coord, second_coord, criterium, fn, x_first)
     {
         for (let x = first_coord - 1 , y = second_coord
             ; x <= first_coord + 1
@@ -85,7 +98,7 @@ class Grid
         {
             if (0 <= x && x < criterium && !(x == first_coord))
             {
-                fn(x, y);
+                fn(x, y), x_first;
             }
         }
     }
