@@ -46,29 +46,43 @@ class Planner
 
     giveReadyRobotsMoreWork()
     {
-      const ready_robots = this.platform.getReadyRobots();
-      ready_robots.forEach(robot => {
-        if (ready_robots.length > 0)
-        {
-          robot.addAssignment(this.getAssignment());
-        }
-      });
+      try{
+        const ready_robots = this.platform.getReadyRobots();
+        ready_robots.forEach(robot => {
+          if (ready_robots.length > 0)
+          {
+            robot.addAssignment(this.getAssignment());
+          }
+        });
+      }
+      catch(error)
+      {
+        console.log(error);
+        return;
+      }
     }
 
     addAssignment(assignment)
     {
-      this.list_of_assignments.push(assignment);
+      if (typeof assignment !== 'Assignment' && !assignment.empty())
+      {
+        this.list_of_assignments.push(assignment);
+      }
+      else {
+        throw new Error("planner recieved a non-assignement");
+      }
     }
 
     getAssignment()
     {
-      try {
+      if(this.list_of_assignments.length !== 0)
+      {
         return this.list_of_assignments.shift();
       }
-      catch
-      {
-        throw new Error("PLanner has no assignments to give!")
-      }
+      else
+        {
+          throw new Error("Planner has no assignments")
+        }
     }
 
     clearAssignments()
