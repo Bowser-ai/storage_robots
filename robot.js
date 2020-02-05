@@ -10,6 +10,9 @@ class Robot
         this.name = name;
 
         this.planner = new Planner();
+        this.platform = new Platform();
+
+        this.platform.addRobot(this);
 
         this.current_coord = initial_coord;
 
@@ -21,7 +24,7 @@ class Robot
         this.ready = true;
 
         this.grid = grid;
-        //this.platform = Platform.getInstance();
+
 
         this.signalReady();
     }
@@ -61,9 +64,9 @@ class Robot
         {
             const pair_current_next = new Move(
                 this.getCurrentLocation(),
-                Utils.first(this.route)
+                utils.first(this.route)
             );
-            //this.platform.post(this, pair_current_next);
+            this.platform.postIntendedMove(this, pair_current_next);
 
         }
         else {
@@ -79,7 +82,7 @@ class Robot
     signalReady()
     {
         this.ready = true;
-        //platform.postReady(this);
+        this.platform.postReady(this);
     }
 
  /*===========================================================================*/
@@ -105,7 +108,7 @@ class Robot
         if (!this.current_assignment ||
           this.current_assignment.empty())
         {
-          this.current_assignment = assignment || new Assignment();
+          this.current_assignment = assignment;
           this[calculateRoute]();
         }
         else
@@ -118,7 +121,7 @@ class Robot
 
   wait()
   {
-    //this.platform.post(this, this.current_coord);
+    this.platform.postIntendedMove(this, new Move(this.current_coord, this.current_coord));
   }
 
   /*==========================================================================*/
@@ -216,7 +219,7 @@ class Robot
          this.route.push(new Point(p1.x, y));
      }
  }
- 
+
  /*===========================================================================*/
 
  [getAssignmentFromPlanner]()
@@ -227,7 +230,7 @@ class Robot
    }
    catch (error) {
      console.log(error);
-     this.wait();
+     this.signalReady();
    }
  }
 }

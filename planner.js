@@ -9,6 +9,7 @@ class Planner
         {
             this.list_of_robots = [];
             this.list_of_assignments = [];
+            this.platform = new Platform();
             Planner.instance = this;
         }
         else
