@@ -52,8 +52,7 @@ class Robot
             // nothing to do?? signal ready!!
             else
             {
-                this.ready = true;
-                this[getAssignmentFromPlanner]();
+                this.signalReady();
                 return;
             }
         }
@@ -221,16 +220,4 @@ class Robot
  }
 
  /*===========================================================================*/
-
- [getAssignmentFromPlanner]()
- {
-   try {
-     assignment = this.planner.getAssignment();
-     this.addAssignment(assignment);
-   }
-   catch (error) {
-     console.log(error);
-     this.signalReady();
-   }
- }
 }

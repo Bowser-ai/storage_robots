@@ -30,14 +30,34 @@ class Planner
         );
     }
 
-    addAssignment(assignment)
+    go()
     {
-        this.list_of_assignments.push(assignment);
+      try {
+        this.giveReadyRobotsMoreWork();
+        this.list_of_robots.forEach(robot => robot.go());
+      }
+      catch(error)
+      {
+        console.log(error);
+        return;
+      }
+
     }
 
-    clearAssignments()
+    giveReadyRobotsMoreWork()
     {
-        this.list_of_assignments.splice(0, this.list_of_assignments.length);
+      const ready_robots = this.platform.getReadyRobots();
+      ready_robots.forEach(robot => {
+        if (ready_robots.length > 0)
+        {
+          robot.addAssignment(this.getAssignment());
+        }
+      });
+    }
+
+    addAssignment(assignment)
+    {
+      this.list_of_assignments.push(assignment);
     }
 
     getAssignment()
@@ -45,10 +65,15 @@ class Planner
       try {
         return this.list_of_assignments.shift();
       }
-      catch (error)
+      catch
       {
-        throw new Error("planner does not have any assignments");
+        throw new Error("PLanner has no assignments to give!")
       }
+    }
+
+    clearAssignments()
+    {
+        this.list_of_assignments.splice(0, this.list_of_assignments.length);
     }
 
     getRobots()

@@ -103,8 +103,8 @@
 
   function addGoEventHandler(button) {
     go_button.addEventListener('click', e => {
+      planner.go();
       planner.getRobots().forEach(robot => {
-        robot.go();
         const current_location_field = document.querySelector(`#current-${robot.getName()}`);
         const target_location_field = document.querySelector(`#target-${robot.getName()}`)
         current_location_field.innerText =
