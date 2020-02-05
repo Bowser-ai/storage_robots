@@ -1,7 +1,7 @@
 (function(global){
 
   let control_panel_ns = global.control_panel_ns || {};
-  
+
   function createAddAssignmentButton() {
     const add_assignment_button = document.createElement('button');
     add_assignment_button.innerText = "Add Assignment";
@@ -104,7 +104,7 @@
   function addGoEventHandler(button) {
     go_button.addEventListener('click', e => {
       planner.getRobots().forEach(robot => {
-        robot.giveGreenLight();
+        robot.go();
         const current_location_field = document.querySelector(`#current-${robot.getName()}`);
         const target_location_field = document.querySelector(`#target-${robot.getName()}`)
         current_location_field.innerText =
