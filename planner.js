@@ -47,8 +47,9 @@ class Planner
     giveReadyRobotsMoreWork()
     {
       const ready_robots = this.platform.getReadyRobots();
-      ready_robots.forEach(robot => {
-        if (ready_robots.length > 0)
+      if (ready_robots.length > 0)
+      {
+        ready_robots.forEach(robot =>
         {
           let assignment;
           try {
@@ -63,8 +64,8 @@ class Planner
           {
             robot.addAssignment(assignment);
           }
-        }
-      });
+        });
+      }
     }
 
     addAssignment(assignment)

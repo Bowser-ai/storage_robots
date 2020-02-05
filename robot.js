@@ -43,21 +43,6 @@ class Robot
 
     go()
     {
-        if (this.route.length === 0) //no route?
-        {
-            if (this.current_assignment && !this.current_assignment.empty()) //still an assignment?
-            {
-                this[calculateRoute]();
-            }
-
-            // nothing to do?? signal ready!!
-            else
-            {
-                this.signalReady();
-                return;
-            }
-        }
-
         // no green light means the robot will posts its intensions to the
         // platform
         if(!this.green_light)
@@ -67,12 +52,26 @@ class Robot
                 utils.first(this.route)
             );
             this.platform.postIntendedMove(this, pair_current_next);
-
         }
         else {
             //we have green light, pop the next coord from the route and go
             //pop the first coord of the route and update current pos
             this.current_coord = this.route.shift();
+
+            if (this.route.length === 0) //no route?
+            {
+                if (this.current_assignment && !this.current_assignment.empty()) //still an assignment?
+                {
+                    this[calculateRoute]();
+                }
+
+                // nothing to do?? signal ready!!
+                else
+                {
+                    this.signalReady();
+                }
+            }
+
             this.green_light = false;
         }
     }
@@ -180,8 +179,7 @@ class Robot
 
  [signalStandInPlace]()
  {
-   this.route.unshift(this.current_coord);
-   this.go();
+   this.route.push(this.current_coord);
    return;
  }
 
