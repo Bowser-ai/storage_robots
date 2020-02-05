@@ -46,20 +46,25 @@ class Planner
 
     giveReadyRobotsMoreWork()
     {
-      try{
-        const ready_robots = this.platform.getReadyRobots();
-        ready_robots.forEach(robot => {
-          if (ready_robots.length > 0)
-          {
-            robot.addAssignment(this.getAssignment());
+      const ready_robots = this.platform.getReadyRobots();
+      ready_robots.forEach(robot => {
+        if (ready_robots.length > 0)
+        {
+          let assignment;
+          try {
+            assignment = this.getAssignment();
           }
-        });
-      }
-      catch(error)
-      {
-        console.log(error);
-        return;
-      }
+          catch(error)
+          {
+            assignment = new Assignment();
+            assignment.addPoint(robot.getCurrentLocation());
+          }
+          finally
+          {
+            robot.addAssignment(assignment);
+          }
+        }
+      });
     }
 
     addAssignment(assignment)
@@ -81,7 +86,7 @@ class Planner
       }
       else
         {
-          throw new Error("Planner has no assignments")
+          throw new Error("planner does not have any assignments")
         }
     }
 

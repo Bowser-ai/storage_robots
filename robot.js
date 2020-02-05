@@ -2,6 +2,7 @@
 const selectComperator = Symbol();
 const calculateRoute = Symbol();
 const getAssignmentFromPlanner = Symbol();
+const signalStandInPlace = Symbol();
 
 class Robot
 {
@@ -120,6 +121,8 @@ class Robot
 
   wait()
   {
+
+    this.route.unshift(this.current_coord);
     this.platform.postIntendedMove(this, new Move(this.current_coord, this.current_coord));
   }
 
@@ -175,10 +178,24 @@ class Robot
 
  /*===========================================================================*/
 
+ [signalStandInPlace]()
+ {
+   this.route.unshift(this.current_coord);
+   this.go();
+   return;
+ }
+
+ /*===========================================================================*/
+
  [calculateRoute]()
  {
      const p0 = this.getCurrentLocation();
      const p1 = this.current_assignment.popFirst();
+
+     if (p0 === p1)
+     {
+       return this[signalStandInPlace]();
+     }
 
      if (!this.grid.isInGrid(p0) || !this.grid.isInGrid(p1))
      {
