@@ -14,7 +14,7 @@ class Robot
         this.current_coord = initial_coord;
 
         this.route = [];
-        this.current_assignment = [];
+        this.current_assignment = new Assignment();
 
         this.wait_counter = 0;
         this.green_light = false;
@@ -41,8 +41,7 @@ class Robot
     {
         if (this.route.length === 0) //no route?
         {
-            if (this.current_assignment.length !== 0 &&
-                !this.current_assignment.empty()) //still an assignment?
+            if (this.current_assignment && !this.current_assignment.empty()) //still an assignment?
             {
                 this[calculateRoute]();
             }
@@ -103,10 +102,10 @@ class Robot
     addAssignment(assignment)
     {
         this.ready = false;
-        if (this.current_assignment.length === 0 ||
+        if (!this.current_assignment ||
           this.current_assignment.empty())
         {
-          this.current_assignment.push(assignment);
+          this.current_assignment = assignment || new Assignment();
           this[calculateRoute]();
         }
         else
@@ -177,7 +176,7 @@ class Robot
  [calculateRoute]()
  {
      const p0 = this.getCurrentLocation();
-     const p1 = this.current_assignment.shift().popFirst();
+     const p1 = this.current_assignment.popFirst();
 
      if (!this.grid.isInGrid(p0) || !this.grid.isInGrid(p1))
      {
@@ -217,6 +216,9 @@ class Robot
          this.route.push(new Point(p1.x, y));
      }
  }
+ 
+ /*===========================================================================*/
+
  [getAssignmentFromPlanner]()
  {
    try {
