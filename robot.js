@@ -139,7 +139,20 @@ class Robot
     const possible_steps = this.grid.getPossibleSteps(this.current_coord);
     // pick a random number from the possibleSteps array
     const index = Math.floor(Math.random() * possible_steps.length);
-    this.route.push(new Point(possible_steps[index]));
+    const possible_step = possible_steps[index];
+    const new_assignment = new Assignment();
+
+    // get the target coord for recalculation
+    const target_coord = this.route[this.route.length - 1];
+
+    new_assignment.addPoint(new Point(target_coord.x, target_coord.y));
+    //refresh the current_assignment with the target, the current_assignment was popped
+    this.current_assignment = new_assignment;
+
+    //clear the route for recalculation
+    this.route.length = 0;
+    this.route.unshift(new Point(possible_step.x ,possible_step.y));
+    this[calculateRoute]();
     this.go();
   }
 

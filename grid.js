@@ -42,7 +42,7 @@ class Grid
           }
           else
           {
-            possibleSteps.push(new Point(y,x));
+            possible_steps.push(new Point(y,x));
           }
         };
 
@@ -98,7 +98,7 @@ class Grid
         {
             if (0 <= x && x < criterium && !(x == first_coord))
             {
-                fn(x, y), x_first;
+                fn(x, y, x_first);
             }
         }
     }
